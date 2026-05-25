@@ -12,7 +12,7 @@ function getDatabase(): PDO
 
     $dataDirectory = __DIR__ . '/../data';
     if (!is_dir($dataDirectory)) {
-        mkdir($dataDirectory, 0755, true);
+        mkdir($dataDirectory, 0700, true);
     }
 
     $databasePath = $dataDirectory . '/notes.sqlite';

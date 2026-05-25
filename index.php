@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/src/database.php';
 
+const DATETIME_FORMAT = 'Y-m-d H:i:s';
+
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -56,7 +58,7 @@ switch ($method) {
         $body = parseJsonBody();
         validateNotePayload($body);
 
-        $now = date('Y-m-d H:i:s');
+        $now = date(DATETIME_FORMAT);
         $stmt = $db->prepare(
             'INSERT INTO notes (title, content, created_at, updated_at) VALUES (:title, :content, :created_at, :updated_at)'
         );
@@ -92,7 +94,7 @@ switch ($method) {
             'id' => (int) $noteId,
             'title' => trim($body['title']),
             'content' => trim($body['content']),
-            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date(DATETIME_FORMAT),
         ]);
 
         $updatedNote = findNoteById($db, (int) $noteId);
@@ -123,7 +125,7 @@ function parseJsonBody(): array
 {
     $rawBody = file_get_contents('php://input');
     if ($rawBody === false || trim($rawBody) === '') {
-        respond(400, ['error' => 'Request body must be valid JSON']);
+        respond(400, ['error' => 'Request body is required']);
     }
 
     $data = json_decode($rawBody, true);
