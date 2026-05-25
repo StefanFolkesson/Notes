@@ -130,7 +130,7 @@ function parseJsonBody(): array
 
     $data = json_decode($rawBody, true);
     if (!is_array($data)) {
-        respond(400, ['error' => 'Request body must be valid JSON']);
+        respond(400, ['error' => 'Request body must be valid JSON: ' . json_last_error_msg()]);
     }
 
     return $data;

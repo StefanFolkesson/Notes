@@ -16,8 +16,13 @@ function getDatabase(): PDO
     }
 
     $databasePath = $dataDirectory . '/notes.sqlite';
+    $isNewDatabase = !file_exists($databasePath);
     $pdo = new PDO('sqlite:' . $databasePath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    if ($isNewDatabase) {
+        chmod($databasePath, 0600);
+    }
 
     $pdo->exec(
         'CREATE TABLE IF NOT EXISTS notes (
