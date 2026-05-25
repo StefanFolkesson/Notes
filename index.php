@@ -71,6 +71,9 @@ switch ($method) {
 
         $id = (int) $db->lastInsertId();
         $createdNote = findNoteById($db, $id);
+        if ($createdNote === null) {
+            respond(500, ['error' => 'Could not read created note']);
+        }
 
         http_response_code(201);
         header('Location: /notes/' . $id);
@@ -98,6 +101,10 @@ switch ($method) {
         ]);
 
         $updatedNote = findNoteById($db, (int) $noteId);
+        if ($updatedNote === null) {
+            respond(500, ['error' => 'Could not read updated note']);
+        }
+
         respond(200, $updatedNote);
         break;
 

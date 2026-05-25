@@ -20,8 +20,8 @@ function getDatabase(): PDO
     $pdo = new PDO('sqlite:' . $databasePath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if ($isNewDatabase) {
-        chmod($databasePath, 0600);
+    if ($isNewDatabase && !chmod($databasePath, 0600)) {
+        throw new RuntimeException('Could not set secure permissions on SQLite database file.');
     }
 
     $pdo->exec(
