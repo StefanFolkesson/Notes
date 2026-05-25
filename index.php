@@ -20,7 +20,11 @@ if ($segments[0] !== 'notes') {
 }
 
 $noteId = $segments[1] ?? null;
-if ($noteId !== null && (!ctype_digit($noteId) || isset($segments[2]))) {
+if (isset($segments[2])) {
+    respond(404, ['error' => 'Route not found']);
+}
+
+if ($noteId !== null && !ctype_digit($noteId)) {
     respond(404, ['error' => 'Route not found']);
 }
 
@@ -52,7 +56,7 @@ switch ($method) {
         $body = parseJsonBody();
         validateNotePayload($body);
 
-        $now = date(DATE_ATOM);
+        $now = date('Y-m-d H:i:s');
         $stmt = $db->prepare(
             'INSERT INTO notes (title, content, created_at, updated_at) VALUES (:title, :content, :created_at, :updated_at)'
         );
@@ -88,7 +92,7 @@ switch ($method) {
             'id' => (int) $noteId,
             'title' => trim($body['title']),
             'content' => trim($body['content']),
-            'updated_at' => date(DATE_ATOM),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         $updatedNote = findNoteById($db, (int) $noteId);
